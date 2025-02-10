@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Game
+from .models import Game,Review
 
 
 
@@ -10,3 +10,11 @@ class GameAdmin(admin.ModelAdmin):
     list_filter = ['created_at']
     search_fields = ['title','description']
     prepopulated_fields = {"slug": ("title",)}
+
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['author','game']
+    list_filter = ['created_at']
+    search_fields = ['game__title','author']

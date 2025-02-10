@@ -94,7 +94,7 @@ https://templatemo.com/tm-589-lugx-gaming
         </div>
         <div class="col-lg-6 align-self-center">
           <h4>{{ game.title }}</h4>
-          <span class="price"><em>${{ game.price }}</em> $22</span>
+          <span class="price">{% if game.off == 0 %}${{ game.price }}{% else %}<em>${{ game.price }}</em> ${{ game.get_final_price }}{% endif %}</span>
           <p>{{ game.summary|linebreaks }}</p>
           <form id="qty" action="#">
             <input type="qty" class="form-control" id="1" aria-describedby="quantity" placeholder="1">
@@ -124,17 +124,22 @@ https://templatemo.com/tm-589-lugx-gaming
                   <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Description</button>
                   </li>
+                    {% if game.review %}
                   <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Reviews (3)</button>
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Review</button>
                   </li>
+                    {% endif %}
                 </ul>
               </div>              
               <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
                   {{ game.description|linebreaks }}
                 </div>
+                  {% if game.review %}
                 <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                  <p>Coloring book air plant shabby chic, crucifix normcore raclette cred swag artisan activated charcoal. PBR&B fanny pack pok pok gentrify truffaut kitsch helvetica jean shorts edison bulb poutine next level humblebrag la croix adaptogen. <br><br>Hashtag poke literally locavore, beard marfa kogi bruh artisan succulents seitan tonx waistcoat chambray taxidermy. Same cred meggings 3 wolf moon lomo irony cray hell of bitters asymmetrical gluten-free art party raw denim chillwave tousled try-hard succulents street art.</p>
+                  <p>{{ game.review.author }} from {{ game.review.site }}</p>
+                  <p>{{ game.review.body|linebreaks }}</p>
+                    {% endif %}
                 </div>
               </div>
             </div>
