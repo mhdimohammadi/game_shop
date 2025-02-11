@@ -5,8 +5,8 @@ from .models import Game,Review
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    list_display = ['title','price','genre']
-    list_editable = ['price','genre']
+    list_display = ['title','price','genres']
+    list_editable = ['price','genres']
     list_filter = ['created_at']
     search_fields = ['title','description']
     prepopulated_fields = {"slug": ("title",)}

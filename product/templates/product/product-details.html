@@ -61,7 +61,7 @@ https://templatemo.com/tm-589-lugx-gaming
                       <li><a href="product-details.html" class="active">Product Details</a></li>
                       <li><a href="contact.html">Contact Us</a></li>
                       <li><a href="#">Sign In</a></li>
-                  </ul>   
+                  </ul>
                     <a class='menu-trigger'>
                         <span>Menu</span>
                     </a>
@@ -102,7 +102,7 @@ https://templatemo.com/tm-589-lugx-gaming
           </form>
           <ul>
             <li><span>Game ID:</span> {{ game.id }}</li>
-            <li><span>Genre:</span>{% for g in game.genre %} <a href="#">{{ g }}</a>,{% endfor %}</li>
+            <li><span>Genre:</span>{% for genre in game.genres %} <a href="#">{{ genre }}</a>,{% endfor %}</li>
             <li><span>Multi-tags:</span> {% for tag in game.tags.all %} <a href="#">#{{ tag }}</a>,{% endfor %}</li>
           </ul>
         </div>
@@ -130,7 +130,7 @@ https://templatemo.com/tm-589-lugx-gaming
                   </li>
                     {% endif %}
                 </ul>
-              </div>              
+              </div>
               <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
                   {{ game.description|linebreaks }}
@@ -154,54 +154,28 @@ https://templatemo.com/tm-589-lugx-gaming
       <div class="row">
         <div class="col-lg-6">
           <div class="section-heading">
-            <h6>Action</h6>
             <h2>Related Games</h2>
           </div>
         </div>
         <div class="col-lg-6">
-          <div class="main-button">
-            <a href="shop.html">View All</a>
-          </div>
         </div>
+        {% for game in similar_games %}
         <div class="col-lg col-sm-6 col-xs-12">
           <div class="item">
-            <h4>Action</h4>
+            <h4>{{ game.genres|first }}</h4>
             <div class="thumb">
-              <a href="product-details.html"><img src="../../static/assets/images/categories-01.jpg" alt=""></a>
+              <a href="{{ game.get_absolute_url }}"><img src="{{ game.image.url }}" alt=""></a>
             </div>
           </div>
         </div>
+        {% endfor %}
         <div class="col-lg col-sm-6 col-xs-12">
-          <div class="item">
-            <h4>Action</h4>
-            <div class="thumb">
-              <a href="product-details.html"><img src="../../static/assets/images/categories-05.jpg" alt=""></a>
-            </div>
-          </div>
         </div>
         <div class="col-lg col-sm-6 col-xs-12">
-          <div class="item">
-            <h4>Action</h4>
-            <div class="thumb">
-              <a href="product-details.html"><img src="../../static/assets/images/categories-03.jpg" alt=""></a>
-            </div>
-          </div>
         </div>
         <div class="col-lg col-sm-6 col-xs-12">
-          <div class="item">
-            <h4>Action</h4>
-            <div class="thumb">
-              <a href="product-details.html"><img src="../../static/assets/images/categories-04.jpg" alt=""></a>
-            </div>
-          </div>
         </div>
         <div class="col-lg col-sm-6 col-xs-12">
-          <div class="item">
-            <h4>Action</h4>
-            <div class="thumb">
-              <a href="product-details.html"><img src="../../static/assets/images/categories-05.jpg" alt=""></a>
-            </div>
-          </div>
         </div>
       </div>
     </div>
