@@ -1,16 +1,16 @@
-from django.db.models import Q
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from .models import Game
 
 
+def index(request):
+    games = Game.objects.all()
+    trending_games = games.order_by('-created_at')[:4]
+    best_offer=games.order_by('-off').first()
+    context = {"best_offer":best_offer,"trending_games":trending_games}
+    return render(request, "../templates/product/index.html",context)
 
 
-def game_detail(request,id):
-    game = get_object_or_404(Game,id=id)
-    genres = game.genres
-    # Construct a Q object for each genre
-    genre_queries = Q()
-    for genre in genres:
-        genre_queries |= Q(genres__contains=genre)
-    similar_games = Game.objects.filter(genre_queries).exclude(id=game.id).distinct()
-    return render(request,"../templates/product/product-details.html",{"game":game,"similar_games":similar_games})
+def game_detail(request, id):
+    game = get_object_or_404(Game, id=id)
+    similar_games = game.category.games.exclude(id=game.id)
+    return render(request, "../templates/product/product-details.html", {"game": game, "similar_games": similar_games})

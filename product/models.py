@@ -1,24 +1,25 @@
 from django.db import models
 from django.urls import reverse
 from taggit.managers import TaggableManager
-from multiselectfield import MultiSelectField
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
-class Game(models.Model):
-    class Genre(models.TextChoices):
-        ACTION = 'ACTION', 'ACTION'
-        ADVENTURE = 'ADVENTURE', 'ADVENTURE'
-        FAMILY = 'FAMILY', 'FAMILY'
-        PUZZLE = 'PUZZLE', 'PUZZLE'
-        SHOOTER = 'SHOOTER', 'SHOOTER'
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    slug = models.SlugField(unique=True)
 
+    def __str__(self):
+        return self.name
+
+
+
+class Game(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     summary = models.TextField(help_text="write a summary of the game story", null=True, blank=True)
     price = models.IntegerField(default=0)
     off = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(100), MinValueValidator(0)])
-    genres = MultiSelectField(choices=Genre.choices)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='games',null=True, blank=True)
     image = models.ImageField(upload_to="images/games")
     tags = TaggableManager()
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -26,7 +27,7 @@ class Game(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        indexes = [models.Index(fields=['-created_at'])]
+        indexes = [models.Index(fields=['-created_at','-off'])]
         verbose_name = 'Game'
         verbose_name_plural = 'Games'
 

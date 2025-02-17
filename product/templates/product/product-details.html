@@ -102,7 +102,7 @@ https://templatemo.com/tm-589-lugx-gaming
           </form>
           <ul>
             <li><span>Game ID:</span> {{ game.id }}</li>
-            <li><span>Genre:</span>{% for genre in game.genres %} <a href="#">{{ genre }}</a>,{% endfor %}</li>
+            <li><span>category:</span><a href="#">{{ game.category }}</a></li>
             <li><span>Multi-tags:</span> {% for tag in game.tags.all %} <a href="#">#{{ tag }}</a>,{% endfor %}</li>
           </ul>
         </div>
@@ -159,10 +159,10 @@ https://templatemo.com/tm-589-lugx-gaming
         </div>
         <div class="col-lg-6">
         </div>
-        {% for game in similar_games %}
+        {% for game in similar_games.all %}
         <div class="col-lg col-sm-6 col-xs-12">
           <div class="item">
-            <h4>{{ game.genres|first }}</h4>
+            <h4>{{ game.category}}</h4>
             <div class="thumb">
               <a href="{{ game.get_absolute_url }}"><img src="{{ game.image.url }}" alt=""></a>
             </div>
