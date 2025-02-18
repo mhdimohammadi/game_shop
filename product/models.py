@@ -18,6 +18,7 @@ class Game(models.Model):
     description = models.TextField()
     summary = models.TextField(help_text="write a summary of the game story", null=True, blank=True)
     price = models.IntegerField(default=0)
+    sold_count = models.IntegerField(default=0)
     off = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(100), MinValueValidator(0)])
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='games',null=True, blank=True)
     image = models.ImageField(upload_to="images/games")
