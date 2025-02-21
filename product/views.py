@@ -21,3 +21,12 @@ def game_detail(request, id):
 
 def contact_us(request):
     return render(request, "../templates/product/contact.html")
+
+
+
+def game_list(request,category=None):
+    games = Game.objects.all()
+    if category :
+        games = games.filter(category=category)
+
+    return render(request,"../templates/product/shop.html",{"games":games})
