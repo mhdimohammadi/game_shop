@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Game
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 
 def index(request):
@@ -24,9 +26,26 @@ def contact_us(request):
 
 
 
-def game_list(request,category=None):
-    games = Game.objects.all()
-    if category :
-        games = games.filter(category=category)
 
+
+def game_list(request):
+    games = Game.objects.all()
     return render(request,"../templates/product/shop.html",{"games":games})
+
+
+
+
+def filter_games(request):
+    # Retrieve category from query parameters; default to "all"
+    category = request.GET.get('category', 'all')
+
+    # Filter games based on category
+    if category == 'all':
+        games = Game.objects.all()
+    else:
+        # Adjust the lookup according to your Game model relationships/fields
+        games = Game.objects.filter(category__name=category)
+
+    # Render a partial template with the filtered games
+    html = render_to_string('../templates/product/game_list_items.html', {'games': games})
+    return JsonResponse({'html': html})

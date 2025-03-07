@@ -88,34 +88,20 @@
     <div class="container">
         <ul class="trending-filter">
             <li>
-                <a class="is_active" href="#!" data-filter="*">Show All</a>
+                <a class="is_active" href="#" data-filter="*">Show All</a>
             </li>
             <li>
-                <a href="#!" data-filter=".adv">Adventure</a>
+                <a href="#" data-filter=".Adventure">Adventure</a>
             </li>
             <li>
-                <a href="#!" data-filter=".str">Strategy</a>
+                <a href="#" data-filter=".Shooter">Shooter</a>
             </li>
             <li>
-                <a href="#!" data-filter=".rac">Racing</a>
+                <a href="#" data-filter=".RPG">RPG</a>
             </li>
         </ul>
-        <div class="row trending-box">
-            {% for game in games %}
-                <div class="col-lg-3 col-md-6 align-self-center mb-30 trending-items col-md-6 adv">
-                <div class="item">
-                    <div class="thumb">
-                        <a href="{{ game.get_absolute_url }}"><img src="{{ game.image.url }}" alt=""></a>
-                        <span class="price">{% if game.off == 0  %}${{ game.price }}{% else %}<em>${{ game.price }}</em>${{ game.get_final_price }}{% endif %}</span>
-                    </div>
-                    <div class="down-content">
-                        <span class="category">{{ game.category }}</span>
-                        <h4>{{ game.title }}</h4>
-                        <a href="{{ game.get_absolute_url }}"><i class="fa fa-shopping-bag"></i></a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+        <div class="row trending-box" id="games-container">
+            {% include "product/game_list_items.html" with games=games %}
         </div>
         <div class="row">
             <div class="col-lg-12">
