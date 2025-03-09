@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Game,Review,Category
+from .models import Game,Review,Category,Ticket
 
 
 
@@ -25,3 +25,8 @@ class ReviewAdmin(admin.ModelAdmin):
 class GameAdmin(admin.ModelAdmin):
     list_display = ['name']
     prepopulated_fields = {"slug": ("name",)}
+
+
+
+
+admin.site.register(Ticket)

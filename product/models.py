@@ -57,3 +57,24 @@ class Review(models.Model):
 
     def __str__(self):
         return self.author
+
+
+
+
+
+
+class Ticket(models.Model):
+    class Status(models.TextChoices):
+        LOGIN = 'Login & Logout Error', 'Login & Logout Error'
+        BUY = 'Buying Error', 'Buying Error'
+        OTHER = 'Other', 'Other'
+
+    name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField()
+    subject = models.CharField(max_length=50,choices=Status.choices)
+    message = models.TextField()
+
+
+    def __str__(self):
+        return self.name
