@@ -47,5 +47,5 @@ def filter_games(request):
         games = Game.objects.filter(category__name=category)
 
     # Render a partial template with the filtered games
-    html = render_to_string('../templates/product/game_list_items.html', {'games': games})
+    html = render_to_string('../templates/product/templates/partials/game_list_items.html', {'games': games})
     return JsonResponse({'html': html})
