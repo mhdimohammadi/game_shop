@@ -19,15 +19,11 @@
                 <li>
                     <a class="is_active" href="#" data-filter="*">Show All</a>
                 </li>
+                {% for category in categories %}
                 <li>
-                    <a href="#" data-filter=".Adventure">Adventure</a>
+                    <a href="#" data-filter=".{{ category.name }}">{{ category.name }}</a>
                 </li>
-                <li>
-                    <a href="#" data-filter=".Shooter">Shooter</a>
-                </li>
-                <li>
-                    <a href="#" data-filter=".RPG">RPG</a>
-                </li>
+                {% endfor %}
             </ul>
             <div class="row trending-box" id="games-container">
                 {% include "partials/game_list_items.html" with games=games %}

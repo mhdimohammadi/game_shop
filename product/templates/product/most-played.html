@@ -1,0 +1,52 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}Most Played Games{% endblock %}
+{% block content %}
+    <div class="page-heading header-text">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3>Most Played Games</h3>
+                    <span class="breadcrumb"><a href="{% url 'game:index' %}">Home</a> > Most Played Games </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section trending">
+        <div class="container">
+            <div class="row trending-box" id="games-container">
+                {% for game in games %}
+                    <div class="col-lg-3 col-md-6 align-self-center mb-30 trending-items col-md-6 adv">
+                        <div class="item">
+                            <div class="thumb">
+                                <a href="{{ game.get_absolute_url }}"><img src="{{ game.image.url }}" alt=""></a>
+                                <span class="price">{% if game.off == 0 %}${{ game.price }}{% else %}
+                                    <em>${{ game.price }}</em>$
+                                    {{ game.get_final_price }}{% endif %}</span>
+                            </div>
+                            <div class="down-content">
+                                <span class="category">{{ game.category }}</span>
+                                <h4>{{ game.title }}</h4>
+                                <a href="{{ game.get_absolute_url }}"><i class="fa fa-shopping-bag"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="pagination">
+                        <li><a href="#"> &lt; </a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a class="is_active" href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#"> &gt; </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

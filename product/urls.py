@@ -9,4 +9,6 @@ urlpatterns = [
    path('contact_us/',views.contact_us,name='contact_us'),
    path('games/', views.game_list, name='game-list'),
    path('filter_games/', views.filter_games, name='filter_games'),
+   path('trending_games/', views.trending_game, name='trending_games'),
+   path('most_played/', views.most_played_game, name='most_played'),
 ]

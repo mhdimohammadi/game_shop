@@ -41,7 +41,7 @@
         </div>
         <div class="col-lg-6">
           <div class="main-button">
-            <a href="shop.html">View All</a>
+            <a href="{% url 'game:trending_games' %}">View All</a>
           </div>
         </div>
         {% for game in trending_games %}
@@ -74,7 +74,7 @@
         </div>
         <div class="col-lg-6">
           <div class="main-button">
-            <a href="shop.html">View All</a>
+            <a href="{% url 'game:most_played' %}">View All</a>
           </div>
         </div>
        {% for game in most_played %}
@@ -160,7 +160,7 @@
                 </div>
                 <p>Best prices,don't miss out our offs on the greatest hits of the gaming industry!</p>
                 <div class="main-button">
-                  <a href="shop.html">Shop Now</a>
+                  <a href="{% url 'game:game-list' %}">Shop Now</a>
                 </div>
               </div>
             </div>

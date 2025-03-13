@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Game
+from .models import Game, Category
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from .forms import TicketForm
@@ -34,7 +34,8 @@ def contact_us(request):
 
 def game_list(request):
     games = Game.objects.all()
-    return render(request, "product/shop.html", {"games": games})
+    categories = Category.objects.all()
+    return render(request, "product/shop.html", {"games": games, "categories": categories})
 
 
 def filter_games(request):
@@ -51,3 +52,15 @@ def filter_games(request):
     # Render a partial template with the filtered games
     html = render_to_string('partials/game_list_items.html', {'games': games})
     return JsonResponse({'html': html})
+
+
+
+def trending_game(request):
+    games = Game.objects.all().order_by('-created_at')
+    return render(request, 'product/trending.html', {'games': games})
+
+
+
+def most_played_game(request):
+    games = Game.objects.all().order_by('-sold_count')
+    return render(request, 'product/most-played.html', {'games': games})
