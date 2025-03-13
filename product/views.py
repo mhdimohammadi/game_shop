@@ -3,7 +3,7 @@ from .models import Game
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from .forms import TicketForm
-
+from django.contrib import messages
 
 def index(request):
     games = Game.objects.all()
@@ -25,6 +25,7 @@ def contact_us(request):
         form = TicketForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Ticket sent successfully!")
             return redirect('game:contact_us')
     else:
         form = TicketForm()
