@@ -25,9 +25,9 @@
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                      <li><a href="{% url 'game:index' %}" class="active">Home</a></li>
-                      <li><a href="{% url 'game:game-list' %}">Our Shop</a></li>
-                      <li><a href="{% url 'game:contact_us' %}">Contact Us</a></li>
+                      <li><a href="{% url 'game:index' %}" {% if request.path == '/' %} class="active"{% endif %}>Home</a></li>
+                      <li><a href="{% url 'game:game-list' %}" {% if request.path == '/games/' %} class="active"{% endif %}>Our Shop</a></li>
+                      <li><a href="{% url 'game:contact_us' %}" {% if request.path == '/contact_us/' %} class="active"{% endif %}>Contact Us</a></li>
                       <li><a href="#">Sign In</a></li>
                   </ul>
                     <a class='menu-trigger'>
