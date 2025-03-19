@@ -37,11 +37,11 @@
             <div class="row">
                 <div class="col-lg-12">
                     <ul class="pagination">
-                        <li><a href="#"> &lt; </a></li>
-                        <li><a href="#">1</a></li>
-                        <li><a class="is_active" href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#"> &gt; </a></li>
+                        {% if games.has_previous %}<li><a href="?page={{ games.previous_page_number}}"> &lt; </a></li>{% endif %}
+                        {% for page in games.paginator.page_range %}
+                        <li><a {% if games.number == page %}class="is_active"{% endif %} href="?page={{ page }}">{{ page }}</a></li>
+                        {% endfor %}
+                        {% if games.has_next %}<li><a href="?page={{ games.next_page_number }}"> &gt; </a></li>{% endif %}
                     </ul>
                 </div>
             </div>

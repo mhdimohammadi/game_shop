@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from .forms import TicketForm
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 def index(request):
     games = Game.objects.all()
@@ -54,13 +56,27 @@ def filter_games(request):
     return JsonResponse({'html': html})
 
 
-
 def trending_game(request):
     games = Game.objects.all().order_by('-created_at')
+    paginator = Paginator(games, 3)
+    page_number = request.GET.get('page', 1)
+    try:
+        games = paginator.page(page_number)
+    except EmptyPage:
+        games = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        games = paginator.page(1)
     return render(request, 'product/trending.html', {'games': games})
-
 
 
 def most_played_game(request):
     games = Game.objects.all().order_by('-sold_count')
+    paginator = Paginator(games, 3)
+    page_number = request.GET.get('page', 1)
+    try:
+        games = paginator.page(page_number)
+    except EmptyPage:
+        games = paginator.page(paginator.num_pages)
+    except PageNotAnInteger:
+        games = paginator.page(1)
     return render(request, 'product/most-played.html', {'games': games})
