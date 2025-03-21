@@ -2,9 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Game, Category
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from .forms import TicketForm
+from .forms import TicketForm, LoginForm
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth import authenticate, login, logout
 
 
 def index(request):
@@ -80,3 +81,29 @@ def most_played_game(request):
     except PageNotAnInteger:
         games = paginator.page(1)
     return render(request, 'product/most-played.html', {'games': games})
+
+
+def user_login(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, username=cd['username'], password=cd['password'])
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    messages.success(request, "You are now logged in!")
+                    return redirect('game:index')
+            else:
+                messages.error(request, "Invalid username or password!")
+                return redirect('game:login')
+    else:
+       form = LoginForm()
+    return render(request,'registration/login.html', {'form': form})
+
+
+
+def user_logout(request):
+    logout(request)
+    messages.success(request, "You have been logged out.")
+    return redirect('game:index')

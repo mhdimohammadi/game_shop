@@ -29,6 +29,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # my apps
+    'product.apps.ProductConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,9 +42,6 @@ INSTALLED_APPS = [
     # packages
     'taggit',
     'multiselectfield',
-
-    # my apps
-    'product.apps.ProductConfig',
 
 ]
 
@@ -83,10 +83,10 @@ WSGI_APPLICATION = 'game_shop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME':'gameshop_db',
-        'USER':'gameshop_admin',
-        'PASSWORD':'mahdi1382m',
-        'PORT':'5432',
+        'NAME': 'gameshop_db',
+        'USER': 'gameshop_admin',
+        'PASSWORD': 'mahdi1382m',
+        'PORT': '5432',
     }
 }
 

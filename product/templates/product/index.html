@@ -139,7 +139,7 @@
           <div class="item">
             <h4>Family</h4>
             <div class="thumb">
-              <a href="product-details.html"><img src="{% static "assets/images/top-game-004.png" %}" alt=""></a>
+              <a href="product-details.html"><img src="{% static "assets/images/top-game-04.jpg" %}" alt=""></a>
             </div>
           </div>
         </div>
@@ -184,6 +184,22 @@
       </div>
     </div>
   </div>
+{% if messages %}
+    <div id="notification" class="notification">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
+<script>
+    window.onload = function() {
+        var notification = document.getElementById("notification");
+        if (notification) {
+            notification.className = "notification show";
+            setTimeout(function(){ notification.className = notification.className.replace("show", ""); }, 3000);
+        }
+    };
+</script>
 {% endblock %}
 
 

@@ -8,7 +8,7 @@ from django.contrib.auth.models import AbstractUser
 class CustomUser(AbstractUser):
     image = models.ImageField(upload_to='images/user', blank=True,null=True)
     address = models.TextField(default='')
-    phone = models.CharField(default='',max_length=11)
+    phone = models.CharField(default='',max_length=11,unique=True)
 
 
 
@@ -79,7 +79,7 @@ class Ticket(models.Model):
         BUY = 'Buying Error', 'Buying Error'
         OTHER = 'Other', 'Other'
 
-    user = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
     subject = models.CharField(max_length=50,choices=Status.choices)
@@ -87,4 +87,4 @@ class Ticket(models.Model):
 
 
     def __str__(self):
-        return self.user
+        return self.name

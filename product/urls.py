@@ -11,4 +11,6 @@ urlpatterns = [
    path('filter_games/', views.filter_games, name='filter_games'),
    path('trending_games/', views.trending_game, name='trending_games'),
    path('most_played/', views.most_played_game, name='most_played'),
+   path('login/', views.user_login, name='login'),
+   path('logout/', views.user_logout, name='logout'),
 ]
