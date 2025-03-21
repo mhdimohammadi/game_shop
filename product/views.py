@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Game, Category
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from .forms import TicketForm, LoginForm
+from .forms import TicketForm, LoginForm,UserRegisterForm
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
@@ -107,3 +107,17 @@ def user_logout(request):
     logout(request)
     messages.success(request, "You have been logged out.")
     return redirect('game:index')
+
+
+def user_register(request):
+    if request.method == "POST":
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            messages.success(request, f"Welcome {user.username}!")
+            return redirect('game:index')
+    else :
+        form = UserRegisterForm()
+    return render(request,'registration/register.html', {'form': form})
