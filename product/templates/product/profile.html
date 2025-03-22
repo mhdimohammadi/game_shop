@@ -24,7 +24,7 @@
       </div>
       <nav class="nav-menu">
         <ul>
-          <li><a href="#" data-section="settings" class="active">Settings</a></li>
+          <li><a href="#" data-section="settings" class="active">Edit</a></li>
           <li><a href="#" data-section="orders">Orders</a></li>
           <li><a href="#" data-section="cart">Cart</a></li>
         </ul>
@@ -36,35 +36,54 @@
       <!-- Settings Section with Edit Profile Form -->
       <section id="settings" class="content-section active">
         <div class="card">
-          <h2>Settings</h2>
-          <form class="edit-profile-form" action="#" method="post">
+          <h2>Edit</h2>
+          <form class="edit-profile-form"  method="post">
+              {% csrf_token %}
             <div class="form-group">
               <label for="username">Username</label>
-              <input type="text" id="username" name="username" placeholder="Enter your username" required>
+              {{ form.username }}
             </div>
             <div class="form-group">
               <label for="first-name">First Name</label>
-              <input type="text" id="first-name" name="first_name" placeholder="Enter your first name" required>
+              {{ form.first_name }}
             </div>
             <div class="form-group">
               <label for="last-name">Last Name</label>
-              <input type="text" id="last-name" name="last_name" placeholder="Enter your last name" required>
+              {{ form.last_name }}
             </div>
             <div class="form-group">
               <label for="phone">Phone</label>
-              <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+              {{ form.phone }}
             </div>
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="Enter your email" required>
+              {{ form.email }}
             </div>
             <div class="form-group">
               <label for="address">Address</label>
-              <textarea id="address" name="address" placeholder="Enter your address" rows="3"></textarea>
+              {{ form.address }}
             </div>
             <button type="submit" class="submit-btn">Update Profile</button>
           </form>
+            <hr>
+            {% if form.errors %}
+                {% for field in form %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            {{ field.label }}:{{ error }}
+                            <hr>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
+      {% if messages %}
+                <div id="notification" class="notification">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </div>
+              {% endif %}
       </section>
 
       <!-- Orders Section -->
@@ -158,6 +177,14 @@
     });
   });
 
-  </script>
 
+
+  window.onload = function() {
+        var notification = document.getElementById("notification");
+        if (notification) {
+            notification.className = "notification show";
+            setTimeout(function(){ notification.className = notification.className.replace("show", ""); }, 3000);
+        }
+    };
+</script>
 {% endblock %}

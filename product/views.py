@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Game, Category
 from django.http import JsonResponse
 from django.template.loader import render_to_string
-from .forms import TicketForm, LoginForm,UserRegisterForm
+from .forms import TicketForm, LoginForm,UserRegisterForm,UserEditForm
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
@@ -130,4 +130,12 @@ def user_register(request):
 @login_required(login_url='game:login')
 def profile(request):
     user = request.user
-    return render(request,'product/profile.html', {'user': user})
+    if request.method == "POST":
+        form = UserEditForm(instance=user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your profile has been updated!")
+            return redirect('game:profile')
+    else :
+        form = UserEditForm(instance=user)
+    return render(request,'product/profile.html', {'user': user, 'form': form})
