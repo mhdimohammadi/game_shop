@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import Game,Review,Category,Ticket,CustomUser
-
+from .models import Game, Review, Category, Ticket, CustomUser, Order, OrderItem
 
 
 @admin.register(Game)
@@ -31,3 +30,5 @@ class GameAdmin(admin.ModelAdmin):
 
 admin.site.register(Ticket)
 admin.site.register(CustomUser)
+admin.site.register(Order)
+admin.site.register(OrderItem)

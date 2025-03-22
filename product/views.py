@@ -6,6 +6,7 @@ from .forms import TicketForm, LoginForm,UserRegisterForm
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -102,7 +103,7 @@ def user_login(request):
     return render(request,'registration/login.html', {'form': form})
 
 
-
+@login_required(login_url='game:login')
 def user_logout(request):
     logout(request)
     messages.success(request, "You have been logged out.")
@@ -121,3 +122,12 @@ def user_register(request):
     else :
         form = UserRegisterForm()
     return render(request,'registration/register.html', {'form': form})
+
+
+
+
+
+@login_required(login_url='game:login')
+def profile(request):
+    user = request.user
+    return render(request,'product/profile.html', {'user': user})

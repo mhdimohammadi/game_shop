@@ -1,0 +1,163 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+  <header class="header">
+    <h2 style="color: white">User Profile Dashboard</h2>
+  </header>
+
+  <div class="layout">
+    <!-- Sidebar with profile picture and navigation -->
+    <aside class="sidebar">
+      <div class="profile-container">
+        <div class="profile-picture">
+          <img src="../../static/assets/images/user-circle-icon-256x256-vmrs52ri.png" alt="Profile Picture">
+          <input type="file" id="fileInput" />
+          <button id="uploadButton" class="edit-btn" title="Change Profile Picture">
+            <!-- Pencil Icon using currentColor so it inherits the white color -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-9.146 9.146-2.5.5a.5.5 0 0 1-.606-.606l.5-2.5L12.146.854z"/>
+              <path d="M11.207 2.793L3 10v3h3l8.207-8.207-3-3z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="#" data-section="settings" class="active">Settings</a></li>
+          <li><a href="#" data-section="orders">Orders</a></li>
+          <li><a href="#" data-section="cart">Cart</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main content area (only one section shows at a time) -->
+    <main class="content">
+      <!-- Settings Section with Edit Profile Form -->
+      <section id="settings" class="content-section active">
+        <div class="card">
+          <h2>Settings</h2>
+          <form class="edit-profile-form" action="#" method="post">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+              <label for="first-name">First Name</label>
+              <input type="text" id="first-name" name="first_name" placeholder="Enter your first name" required>
+            </div>
+            <div class="form-group">
+              <label for="last-name">Last Name</label>
+              <input type="text" id="last-name" name="last_name" placeholder="Enter your last name" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+              <label for="address">Address</label>
+              <textarea id="address" name="address" placeholder="Enter your address" rows="3"></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Update Profile</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Orders Section -->
+      <section id="orders" class="content-section">
+        <div class="card">
+          <h2>Orders</h2>
+          <!-- START: Sample Order Card -->
+          <!-- In your Django template, iterate over each order -->
+          {% for order in user.orders.all %}
+              <div class="order-card">
+            <h3>Order #{{ order.id }}</h3>
+            <div class="order-items">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Game Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Example game rows (replace with Django loop) -->
+                    {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.game.title }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.game.get_final_price }}</td>
+                            <td>{{ item.cost }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="order-total">
+              <strong>Total Order Price: </strong> ${{ order.get_total_cost }}
+            </div>
+          </div>
+           {% empty %}
+              <p>You have no Order!</p>
+          {% endfor %}
+          <!-- END: Sample Order Card -->
+        </div>
+      </section>
+
+      <!-- Cart Section -->
+      <section id="cart" class="content-section">
+        <div class="card">
+          <h2>Cart</h2>
+          <p>Your shopping cart is currently empty.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- JavaScript to handle section switching -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const navLinks = document.querySelectorAll('.nav-menu a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          // Remove 'active' classes from all links and sections.
+          navLinks.forEach(item => item.classList.remove('active'));
+          document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+          // Mark the clicked link as active.
+          this.classList.add('active');
+          // Get and show the target section.
+          const target = document.getElementById(this.getAttribute('data-section'));
+          if (target) {
+            target.classList.add('active');
+          }
+        });
+      });
+    });
+
+     // Wait until the DOM is loaded
+  document.addEventListener("DOMContentLoaded", function () {
+    // When the user clicks the custom button, trigger a click on the hidden file input
+    document.getElementById('uploadButton').addEventListener('click', function () {
+      document.getElementById('fileInput').click();
+    });
+
+    // Handle when a file is selected
+    document.getElementById('fileInput').addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        console.log('File selected:', file);
+        // You can proceed to read the file using FileReader here to preview it, etc.
+      }
+    });
+  });
+
+  </script>
+
+{% endblock %}

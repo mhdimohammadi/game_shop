@@ -30,7 +30,7 @@
                       <li><a href="{% url 'game:contact_us' %}" {% if request.path == '/contact_us/' %} class="active"{% endif %}>Contact Us</a></li>
                       <li>
                           {% if request.user.is_authenticated %}
-                            <a href="#">{{ request.user.username }}</a>
+                            <a href="{% url 'game:profile' %}">{{ request.user.username }}</a>
                           {% else %}
                             <a href="{% url 'game:login' %}">login</a>
                           {% endif %}
