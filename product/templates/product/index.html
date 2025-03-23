@@ -11,8 +11,8 @@
             <h2>BEST GAMING SITE EVER!</h2>
             <p>LUGX Gaming is the best game shop ever. you can find any game you want in here with best prices and mind blowing offers, enjoy! </p>
             <div class="search-input">
-              <form id="search" action="#">
-                <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
+              <form id="search" action="{% url 'game:search' %}">
+                <input type="text" placeholder="Type Something" id='searchText' name="query" onkeypress="handle" />
                 <button role="button">Search Now</button>
               </form>
             </div>

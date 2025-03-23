@@ -1,5 +1,4 @@
-from cProfile import label
-
+from re import match
 from django import forms
 from .models import Ticket, CustomUser
 
@@ -54,13 +53,25 @@ class UserRegisterForm(forms.ModelForm):
     def clean_password2(self):
         cd = self.cleaned_data
         if cd['password'] != cd['password2']:
-            raise forms.ValidationError("Passwords don't match")
+            raise forms.ValidationError("Please enter your password correctly ")
+        if cd['password2'].isdigit():
+            raise forms.ValidationError("password must contain a letter")
+        if len(cd['password2']) < 8:
+            raise forms.ValidationError("password should be at least 8 character")
+        if not bool(match(r'\w*[A-Z]w*', cd['password2'])):
+            raise forms.ValidationError("Your password must contain capital letters")
         return cd['password2']
 
     def clean_phone(self):
         phone = self.cleaned_data['phone']
         if CustomUser.objects.filter(phone=phone).exists():
             raise forms.ValidationError("phone already exist!")
+        if not phone.isdigit():
+            raise forms.ValidationError('phone must be a number')
+        if not phone.startswith('09'):
+            raise forms.ValidationError('phone must starts with 09 digit')
+        if len(phone) != 11:
+            raise forms.ValidationError('phone must be 11 digits')
         return phone
 
 
@@ -91,6 +102,12 @@ class UserEditForm(forms.ModelForm):
         phone = self.cleaned_data['phone']
         if CustomUser.objects.exclude(id=self.instance.id).filter(phone=phone).exists():
             raise forms.ValidationError("phone already exist!")
+        if not phone.isdigit():
+            raise forms.ValidationError('phone must be a number')
+        if not phone.startswith('09'):
+            raise forms.ValidationError('phone must starts with 09 digit')
+        if len(phone) != 11:
+            raise forms.ValidationError('phone must be 11 digits')
         return phone
 
     def clean_username(self):

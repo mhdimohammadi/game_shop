@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.postgres.search import TrigramSimilarity
 
 def index(request):
     games = Game.objects.all()
@@ -139,3 +139,18 @@ def profile(request):
     else :
         form = UserEditForm(instance=user)
     return render(request,'product/profile.html', {'user': user, 'form': form})
+
+
+
+
+
+def game_search(request):
+    query = request.GET.get('query',None)
+    print(query)
+    games = []
+    if query:
+        games1 = Game.objects.annotate(similarity=TrigramSimilarity('title',query)).filter(similarity__gte=0.3)
+        games2 = Game.objects.annotate(similarity=TrigramSimilarity('description',query)).filter(similarity__gte=0.3)
+        games = (games1 | games2).order_by('-similarity')
+    print(games)
+    return render(request,'product/search.html', {'games': games, 'query': query})
