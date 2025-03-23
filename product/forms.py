@@ -115,3 +115,22 @@ class UserEditForm(forms.ModelForm):
         if CustomUser.objects.exclude(id=self.instance.id).filter(username=username).exists():
             raise forms.ValidationError("username already eexist!")
         return username
+
+
+
+
+class UserPasswordChangeForm(forms.Form):
+    password = forms.CharField(max_length=100, required=True,widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+    password2 = forms.CharField(max_length=100, required=True,widget=forms.PasswordInput(attrs={'placeholder': 'Repeat Password'}))
+
+    def clean_password2(self):
+        cd = self.cleaned_data
+        if cd['password'] != cd['password2']:
+            raise forms.ValidationError("Please enter your password correctly ")
+        if cd['password2'].isdigit():
+            raise forms.ValidationError("password must contain a letter")
+        if len(cd['password2']) < 8:
+            raise forms.ValidationError("password should be at least 8 character")
+        if not bool(match(r'\w*[A-Z]w*', cd['password2'])):
+            raise forms.ValidationError("Your password must contain capital letters")
+        return cd['password2']
