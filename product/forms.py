@@ -46,7 +46,7 @@ class UserRegisterForm(forms.ModelForm):
             'username': forms.TextInput(attrs={'placeholder': 'username'}),
             'first_name': forms.TextInput(attrs={'placeholder': 'First name'}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Last name'}),
-            'email': forms.TextInput(attrs={'placeholder': 'email'}),
+            'email': forms.TextInput(attrs={'placeholder': 'email', 'required': 'required'}, ),
             'phone': forms.TextInput(attrs={'placeholder': 'phone'}),
         }
 
@@ -73,9 +73,6 @@ class UserRegisterForm(forms.ModelForm):
         if len(phone) != 11:
             raise forms.ValidationError('phone must be 11 digits')
         return phone
-
-
-
 
 
 class UserEditForm(forms.ModelForm):
@@ -117,11 +114,11 @@ class UserEditForm(forms.ModelForm):
         return username
 
 
-
-
 class UserPasswordChangeForm(forms.Form):
-    password = forms.CharField(max_length=100, required=True,widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
-    password2 = forms.CharField(max_length=100, required=True,widget=forms.PasswordInput(attrs={'placeholder': 'Repeat Password'}))
+    password = forms.CharField(max_length=100, required=True,
+                               widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+    password2 = forms.CharField(max_length=100, required=True,
+                                widget=forms.PasswordInput(attrs={'placeholder': 'Repeat Password'}))
 
     def clean_password2(self):
         cd = self.cleaned_data
@@ -134,3 +131,6 @@ class UserPasswordChangeForm(forms.Form):
         if not bool(match(r'\w*[A-Z]w*', cd['password2'])):
             raise forms.ValidationError("Your password must contain capital letters")
         return cd['password2']
+
+
+

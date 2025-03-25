@@ -18,4 +18,6 @@ urlpatterns = [
    path('search/', views.game_search, name='search'),
    path('password_change', views.password_change, name='password_change'),
    path('password_change_done', views.password_change_done, name='password_change_done'),
+   path('reset_password', views.reset_password, name='reset_password'),
+   path('reset_password_done', views.reset_password_done, name='reset_password_done'),
 ]

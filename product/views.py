@@ -1,15 +1,19 @@
+from urllib.parse import quote
 from django.shortcuts import render, get_object_or_404, redirect, reverse
-from .models import Game, Category
+from .models import Game, Category, CustomUser
 from django.http import JsonResponse, HttpResponseForbidden
 from django.template.loader import render_to_string
-from .forms import TicketForm, LoginForm, UserRegisterForm, UserEditForm, UserPasswordChangeForm
+from .forms import *
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import TrigramSimilarity
-from itsdangerous import URLSafeTimedSerializer
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from django.conf import settings
+from django.core.mail import  EmailMultiAlternatives
+from decouple import config
+import uuid
 
 
 def index(request):
@@ -151,16 +155,17 @@ def game_search(request):
     return render(request, 'product/search.html', {'games': games, 'query': query})
 
 
-def generate_token(user_id):
-    s = URLSafeTimedSerializer(settings.SECRET_KEY)
-    return s.dumps({'user_id': user_id})  # Generates token
+serializer = URLSafeTimedSerializer(settings.SECRET_KEY)
+
+
+def generate_token(obj):
+    return serializer.dumps({'obj': obj})
 
 
 def verify_token(token):
-    s = URLSafeTimedSerializer(settings.SECRET_KEY)
     try:
-        data = s.loads(token, max_age=600)  # Specify the token expiry time
-        return data['user_id']
+        data = serializer.loads(token, max_age=600)
+        return data['obj']
     except Exception:
         return None
 
@@ -172,6 +177,7 @@ def password_change(request):
     if password:
         if user.check_password(password):
             token = generate_token(user.id)
+            token = quote(token)
             return redirect(f"{reverse('game:password_change_done')}?token={token}")
         else:
             messages.error(request, "Invalid password!")
@@ -198,3 +204,49 @@ def password_change_done(request):
     else:
         form = UserPasswordChangeForm()
     return render(request, 'registration/password_change_done.html', {'form': form})
+
+
+def reset_password(request):
+    email = request.GET.get('email', None)
+    if email:
+        if CustomUser.objects.filter(email=email).exists():
+            unique_id = str(uuid.uuid4())
+            token = serializer.dumps({'email': email, 'unique_id': unique_id}, salt='password-reset-salt')
+            token = quote(token)
+            html_content = render_to_string('email/reset_password_email.html', {'reset_url': f'http://127.0.0.1:8000{reverse('game:reset_password_done')}?token={token}'})
+            email_message = EmailMultiAlternatives(
+                'reset password',
+                "If you’re trying to reset your password, use the link provided in the email.",
+                config("EMAIL_HOST_USER"),
+                [email],
+            )
+            email_message.attach_alternative(html_content, "text/html")
+            email_message.send()
+            messages.success(request, "Email has been sent!")
+            return redirect('game:login')
+        else:
+            messages.error(request, "Invalid email!")
+            return redirect('game:reset_password')
+
+    return render(request, 'registration/reset_password.html')
+
+
+def reset_password_done(request):
+    token = request.GET.get('token')
+    try:
+        date = serializer.loads(token, salt='password-reset-salt')
+        email = date['email']
+        user = CustomUser.objects.get(email=email)
+    except (BadSignature, SignatureExpired):
+        return HttpResponseForbidden("Invalid token!")
+    if request.method == 'POST':
+        form = UserPasswordChangeForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            user.set_password(password)
+            user.save()
+            messages.success(request, "Your password has been updated!")
+            return redirect('game:login')
+    else:
+        form = UserPasswordChangeForm()
+    return render(request, 'registration/reset_password_done.html', {'form': form, 'user': user})

@@ -1,4 +1,4 @@
-
+from decouple import config
 import os
 from pathlib import Path
 
@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v0)%3drd%wdre-6c0_+yxu&iu)x&$$v0#pn+kjv9ukx1+e!*z1'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -72,9 +72,9 @@ WSGI_APPLICATION = 'game_shop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'gameshop_db',
-        'USER': 'gameshop_admin',
-        'PASSWORD': 'mahdi1382m',
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD')  ,
         'PORT': '5432',
     }
 }
@@ -119,3 +119,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'product.CustomUser'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # e.g., 'smtp.gmail.com' for Gmail
+EMAIL_PORT = 587  # 465 for SSL, 587 for TLS
+EMAIL_USE_TLS = True  # Use False if using SSL (465)
+EMAIL_USE_SSL = False  # Use True if using SSL
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
