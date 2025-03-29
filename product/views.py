@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import TrigramSimilarity
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from django.conf import settings
-from django.core.mail import  EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from decouple import config
 from .cart import Cart
 import uuid
@@ -215,7 +215,8 @@ def reset_password(request):
             unique_id = str(uuid.uuid4())
             token = serializer.dumps({'email': email, 'unique_id': unique_id}, salt='password-reset-salt')
             token = quote(token)
-            html_content = render_to_string('email/reset_password_email.html', {'reset_url': f'http://127.0.0.1:8000{reverse('game:reset_password_done')}?token={token}'})
+            html_content = render_to_string('email/reset_password_email.html', {
+                'reset_url': f'http://127.0.0.1:8000{reverse('game:reset_password_done')}?token={token}'})
             email_message = EmailMultiAlternatives(
                 'reset password',
                 "If you’re trying to reset your password, use the link provided in the email.",
@@ -254,19 +255,57 @@ def reset_password_done(request):
     return render(request, 'registration/reset_password_done.html', {'form': form, 'user': user})
 
 
-
 @require_POST
-def add_to_cart(request,game_id):
+def add_to_cart(request, game_id):
     try:
         cart = Cart(request)
         game = get_object_or_404(Game, id=game_id)
         cart.add_to_cart(game)
-        context = {"sus":"Game has been added to your cart"}
+        context = {"sus": "Game has been added to your cart"}
         return JsonResponse(context)
     except:
         return JsonResponse({'error': 'invalid request'})
+
 
 def cart_printer(request):
     cart = Cart(request)
     print(cart.cart)
     return HttpResponse(f"{cart}")
+
+
+@require_POST
+def update_quantity(request):
+    game_id = request.POST.get('game_id')
+    action = request.POST.get('action')
+    try:
+        game = get_object_or_404(Game, id=game_id)
+        cart = Cart(request)
+        if action == 'add':
+            cart.add(game)
+        elif action == 'decrease':
+            cart.decrease(game)
+        context = {
+            'total_price': cart.total_price(),
+            'quantity': cart.cart[game_id]['quantity'],
+            'game_total_price': cart.cart[game_id]['quantity'] * cart.cart[game_id]['price'],
+            'success': True,
+        }
+        return JsonResponse(context)
+    except:
+        return JsonResponse({'success': False, 'error': 'item not found'})
+
+
+@require_POST
+def remove_game(request):
+    game_id = request.POST.get('game-id')
+    try:
+        game = get_object_or_404(Game, id=game_id)
+        cart = Cart(request)
+        cart.remove(game)
+        context = {
+            'total_price': cart.total_price(),
+            'success': True,
+        }
+        return JsonResponse(context)
+    except:
+        return JsonResponse({'success': False, "error": 'Item NOt Found'})

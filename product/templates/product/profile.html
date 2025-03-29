@@ -134,13 +134,49 @@
       <section id="cart" class="content-section">
         <div class="card">
           <h2>Cart</h2>
-          <p>Your shopping cart is currently empty.</p>
+          <div class="order-card">
+            <h3></h3>
+            <div class="order-items">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Game Name</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart  %}
+                    <tr class="game-table" data-game-id="{{ item.game.id }}">
+                        <td>{{ item.game.title }}</td>
+                        <td><span id="game-quantity-{{ item.game.id }}">{{ item.quantity }}</span></td>
+                        <td><span id="game-total-{{ item.game.id }}">{{ item.total }}</span></td>
+                        <td>
+                            <span class="game-item" data-game-id="{{ item.game.id }}">
+                            <button type="button" class="btn action-btn increase-btn">+</button>
+                            <button type="button" class="btn action-btn decrease-btn">-</button>
+                            <button type="button" class="btn action-btn remove-btn">🗑</button>
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                        <p>Your shopping cart is currently empty.</p>
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="order-total">
+              <strong>Total Order Price: </strong>$<span id="total-order">{{ cart.total_price }}</span>
+            </div>
+          </div>
         </div>
       </section>
     </main>
   </div>
 
   <!-- JavaScript to handle section switching -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const navLinks = document.querySelectorAll('.nav-menu a');
@@ -178,8 +214,6 @@
     });
   });
 
-
-
   window.onload = function() {
         var notification = document.getElementById("notification");
         if (notification) {
@@ -187,5 +221,49 @@
             setTimeout(function(){ notification.className = notification.className.replace("show", ""); }, 3000);
         }
     };
+
+        $(document).ready(function () {
+            $('.increase-btn').on('click', function () {
+                updateQuantity($(this).closest('.game-item').data('game-id'), 'add');
+            });
+            $('.decrease-btn').on('click', function () {
+                updateQuantity($(this).closest('.game-item').data('game-id'), 'decrease');
+            });
+            $('.remove-btn').on('click', function () {
+                removeItem($(this).closest('.game-item').data('game-id'));
+            });
+
+            function updateQuantity(GameId, action) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "game:update_quantity" %}',
+                    data: {'game_id': GameId, 'action': action, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function (data) {
+                        if (data.success) {
+                            $('#total-order').text(data.total_price);
+                            $('#game-quantity-' + GameId).text(data.quantity);
+                            $('#game-total-' + GameId).text(data.game_total_price);
+                        } else {
+                            alert('Error update quantity!');
+                        }
+                    }
+                });
+            }
+        });
+
+            function removeItem(GameId) {
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'game:remove_game' %}',
+                data: {'game-id': GameId, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function (data) {
+                    if (data.success) {
+                        $('#total-order').text(data.total_price);
+                        $(`.game-table[data-game-id=${GameId}]`).remove();
+                    }else {
+                        alert('Error updating quantity!')}
+                }
+            });
+        }
 </script>
 {% endblock %}

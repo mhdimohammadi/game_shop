@@ -52,7 +52,7 @@ class Cart:
         games = Game.objects.filter(id__in=game_ids)
         cart_dict = self.cart.copy()
         for game in games:
-            cart_dict[str(game.id)]['product'] = game
+            cart_dict[str(game.id)]['game'] = game
         for item in cart_dict.values():
             item['total'] = item['price'] * item['quantity']
             yield item
