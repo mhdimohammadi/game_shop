@@ -1390,7 +1390,7 @@ Single Page Style
   display: inline;
 }
 
-.single-product form button {
+#qty {
   display: inline-block;
   height: 50px;
   line-height: 50px;
@@ -1405,11 +1405,11 @@ Single Page Style
   transition: all .3s;
 }
 
-.single-product form button i {
+#badge {
   margin-right: 5px;
 }
 
-.single-product form button:hover {
+#qty:hover {
   background-color: #0071f8;
 }
 

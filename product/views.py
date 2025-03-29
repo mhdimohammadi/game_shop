@@ -1,7 +1,8 @@
 from urllib.parse import quote
 from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.views.decorators.http import require_POST
 from .models import Game, Category, CustomUser
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponse
 from django.template.loader import render_to_string
 from .forms import *
 from django.contrib import messages
@@ -13,6 +14,7 @@ from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 from django.conf import settings
 from django.core.mail import  EmailMultiAlternatives
 from decouple import config
+from .cart import Cart
 import uuid
 
 
@@ -250,3 +252,21 @@ def reset_password_done(request):
     else:
         form = UserPasswordChangeForm()
     return render(request, 'registration/reset_password_done.html', {'form': form, 'user': user})
+
+
+
+@require_POST
+def add_to_cart(request,game_id):
+    try:
+        cart = Cart(request)
+        game = get_object_or_404(Game, id=game_id)
+        cart.add_to_cart(game)
+        context = {"sus":"Game has been added to your cart"}
+        return JsonResponse(context)
+    except:
+        return JsonResponse({'error': 'invalid request'})
+
+def cart_printer(request):
+    cart = Cart(request)
+    print(cart.cart)
+    return HttpResponse(f"{cart}")

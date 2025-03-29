@@ -20,4 +20,6 @@ urlpatterns = [
    path('password_change_done', views.password_change_done, name='password_change_done'),
    path('reset_password', views.reset_password, name='reset_password'),
    path('reset_password_done', views.reset_password_done, name='reset_password_done'),
+   path('add_to_cart/<int:game_id>/', views.add_to_cart, name="add_to_cart"),
+   path('cart/', views.cart_printer, name="cart"),
 ]

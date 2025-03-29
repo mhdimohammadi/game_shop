@@ -25,10 +25,11 @@
           <h4>{{ game.title }}</h4>
           <span class="price">{% if game.off == 0 %}${{ game.price }}{% else %}<em>${{ game.price }}</em> ${{ game.get_final_price }}{% endif %}</span>
           <p>{{ game.summary|linebreaks }}</p>
-          <form id="qty" action="#">
-            <input type="qty" class="form-control" id="1" aria-describedby="quantity" placeholder="1">
-            <button type="submit"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
-          </form>
+            {% if game.id|stringformat:"s" in cart.cart %}
+                <p>this game is already in your cart</p>
+            {% else %}
+                <button id="qty" type="button"><i id="badge" class="fa fa-shopping-bag"></i> ADD TO CART</button>
+            {% endif %}
           <ul>
             <li><span>Game ID:</span> {{ game.id }}</li>
             <li><span>category:</span><a href="#">{{ game.category }}</a></li>
@@ -109,6 +110,22 @@
       </div>
     </div>
   </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+        $(document).ready(function () {
+            $('#qty').click(function () {
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'game:add_to_cart' game.id %}',
+                    data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function (data) {
+                        $('#qty').text(data.sus);
+                        $('#qty').prop('disabled',true);
+                    }
+                });
+            });
+        });
+</script>
 {% endblock %}
 
 
