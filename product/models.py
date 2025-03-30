@@ -3,16 +3,14 @@ from django.urls import reverse
 from taggit.managers import TaggableManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import AbstractUser
+from django_resized import ResizedImageField
 
 
 class CustomUser(AbstractUser):
-    image = models.ImageField(upload_to='images/user', blank=True,null=True)
+    image = ResizedImageField(size=[150, 150], crop=['middle', 'center'], quality=85, upload_to='images/profiles',null=True, blank=True)
     email = models.EmailField(unique=True)
-    address = models.TextField(default='',null=True,blank=True)
-    phone = models.CharField(default='',max_length=11,unique=True)
-
-
-
+    address = models.TextField(default='', null=True, blank=True)
+    phone = models.CharField(default='', max_length=11, unique=True)
 
 
 class Category(models.Model):
@@ -23,7 +21,6 @@ class Category(models.Model):
         return self.name
 
 
-
 class Game(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -31,7 +28,7 @@ class Game(models.Model):
     price = models.IntegerField(default=0)
     sold_count = models.IntegerField(default=0)
     off = models.PositiveIntegerField(default=0, validators=[MaxValueValidator(100), MinValueValidator(0)])
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='games',null=True, blank=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='games', null=True, blank=True)
     image = models.ImageField(upload_to="images/games")
     tags = TaggableManager()
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -39,7 +36,7 @@ class Game(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-        indexes = [models.Index(fields=['-created_at','-off'])]
+        indexes = [models.Index(fields=['-created_at', '-off'])]
         verbose_name = 'Game'
         verbose_name_plural = 'Games'
 
@@ -70,10 +67,6 @@ class Review(models.Model):
         return self.author
 
 
-
-
-
-
 class Ticket(models.Model):
     class Status(models.TextChoices):
         LOGIN = 'Login & Logout Error', 'Login & Logout Error'
@@ -83,17 +76,11 @@ class Ticket(models.Model):
     name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
-    subject = models.CharField(max_length=50,choices=Status.choices)
+    subject = models.CharField(max_length=50, choices=Status.choices)
     message = models.TextField()
-
 
     def __str__(self):
         return self.name
-
-
-
-
-
 
 
 class Order(models.Model):
@@ -116,10 +103,6 @@ class Order(models.Model):
         return sum(item.cost() for item in self.items.all())
 
 
-
-
-
-
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     game = models.ForeignKey(Game, related_name="order_items", on_delete=models.CASCADE)
@@ -130,4 +113,3 @@ class OrderItem(models.Model):
 
     def cost(self):
         return self.game.get_final_price() * self.quantity
-

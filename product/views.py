@@ -311,3 +311,19 @@ def remove_game(request):
         return JsonResponse(context)
     except:
         return JsonResponse({'success': False, "error": 'Item NOt Found'})
+
+
+
+
+
+@login_required
+def picture_change(request):
+    if request.method == 'POST':
+        user = request.user
+        if 'image' in request.FILES:
+            user.image = request.FILES['image']
+            user.save()
+            messages.success(request, 'Profile picture updated successfully!')
+        else:
+            messages.error(request, 'No image selected.')
+        return redirect('game:profile')

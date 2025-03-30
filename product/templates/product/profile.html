@@ -9,11 +9,16 @@
   <div class="layout">
     <!-- Sidebar with profile picture and navigation -->
     <aside class="sidebar">
+    <form action="{% url 'game:picture_change' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
       <div class="profile-container">
         <div class="profile-picture">
-          <img src="../../static/assets/images/user-circle-icon-256x256-vmrs52ri.png" alt="Profile Picture">
-          <input type="file" id="fileInput" />
-          <button id="uploadButton" class="edit-btn" title="Change Profile Picture">
+            {% if request.user.image %}
+                <img src="{{ request.user.image.url }}" alt="Profile Picture">
+            {% else %}
+                 <img src="../../static/assets/images/user-circle-icon-256x256-vmrs52ri.png" alt="Profile Picture">
+            {% endif %}
+          <button type="button" id="uploadButton" class="edit-btn" title="Change Profile Picture">
             <!-- Pencil Icon using currentColor so it inherits the white color -->
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
               <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-9.146 9.146-2.5.5a.5.5 0 0 1-.606-.606l.5-2.5L12.146.854z"/>
@@ -21,7 +26,10 @@
             </svg>
           </button>
         </div>
+            <input type="file" id="fileInput" name="image" style="display: none;" />
+            <button type="submit" class="submit-btn">Save</button>
       </div>
+      </form>
       <nav class="nav-menu">
         <ul>
           <li><a href="#" data-section="settings" class="active">Edit</a></li>
