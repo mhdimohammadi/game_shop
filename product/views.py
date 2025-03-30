@@ -94,6 +94,7 @@ def most_played_game(request):
 
 
 def user_login(request):
+    cart_data = request.session.get('cart', {})
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -102,6 +103,7 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    request.session['cart'] = cart_data
                     messages.success(request, "You are now logged in!")
                     return redirect('game:index')
             else:

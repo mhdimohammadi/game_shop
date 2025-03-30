@@ -122,7 +122,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'product.CustomUser'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-
+SESSION_COOKIE_AGE = 604800
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # e.g., 'smtp.gmail.com' for Gmail
