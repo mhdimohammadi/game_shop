@@ -1715,8 +1715,9 @@ body {
 /* Profile Picture Container */
 .profile-container {
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center the contents */
+  margin-bottom: 15px;
 }
 
 .profile-picture {
@@ -1726,6 +1727,7 @@ body {
   border-radius: 50%;
   overflow: hidden;
   border: 3px solid #0056b3;
+  margin-bottom: 10px; /* Add space between the picture and the button */
 }
 
 .profile-picture img {
@@ -1734,17 +1736,15 @@ body {
   object-fit: cover;
 }
 
-/* Edit Button (Pencil Icon) */
 .edit-btn {
   position: absolute;
-  right: 5px;
   bottom: 5px;
+  right: 5px;
   background-color: #0056b3;
   border: none;
   border-radius: 50%;
   padding: 5px;
   cursor: pointer;
-  /* Set text color so that the icon (using currentColor) is white */
   color: #fff;
 }
 
@@ -1752,8 +1752,27 @@ body {
   background-color: #003d80;
 }
 
-.edit-btn svg {
-  display: block;
+/* Save Button Styling */
+.save-button-container {
+  display: flex;
+  justify-content: center; /* Center the button horizontally */
+  width: 100%;
+}
+
+.submit-btn {
+  padding: 8px 12px;
+  background-color: #0056b3;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #003d80;
+  transform: scale(1.05);
 }
 
 /* Navigation Menu Styles */
