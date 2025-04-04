@@ -16,6 +16,7 @@ from django.core.mail import EmailMultiAlternatives
 from decouple import config
 from .cart import Cart
 import uuid
+from .redis_utils import cache_game_details, get_cached_game_details,clear_game_cache
 
 
 def index(request):
@@ -28,9 +29,23 @@ def index(request):
 
 
 def game_detail(request, id):
-    game = get_object_or_404(Game, id=id)
-    similar_games = game.category.games.exclude(id=game.id)
-    return render(request, "product/product-details.html", {"game": game, "similar_games": similar_games})
+    game_data = get_cached_game_details(id)
+    if not game_data:
+        game = get_object_or_404(Game, id=id)
+        game_data = {
+            'id':game.id,
+            'title': game.title,
+            'price': game.price,
+            'off' : game.off,
+            'final_price': game.get_final_price(),
+            'summary': game.summary,
+            'category_id' : game.category.id,
+            'image' : game.image.url,
+            'tags': [tag.name for tag in game.tags.all()],
+        }
+        cache_game_details(id, game_data)
+    similar_games = Game.objects.filter(category_id=game_data['category_id']).exclude(id=game_data['id'])[:5]
+    return render(request, "product/product-details.html", {"game": game_data, "similar_games": similar_games})
 
 
 def contact_us(request):
@@ -313,9 +328,6 @@ def remove_game(request):
         return JsonResponse({'success': False, "error": 'Item NOt Found'})
 
 
-
-
-
 @login_required
 def picture_change(request):
     if request.method == 'POST':
@@ -327,3 +339,4 @@ def picture_change(request):
         else:
             messages.error(request, 'No image selected.')
         return redirect('game:profile')
+
