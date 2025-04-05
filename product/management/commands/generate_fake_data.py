@@ -18,7 +18,7 @@ class GameNameProvider(BaseProvider):
         return self.random_element(game_titles)
 
 class Command(BaseCommand):
-    help = 'Generate fake data for testing'
+    help = 'Generate fake game data for testing'
 
     def handle(self, *args, **kwargs):
         fake = Faker()
