@@ -31,7 +31,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR('No categories found in the database. Please add some categories first!'))
             return
 
-        for _ in range(1):
+        for _ in range(10):
             image_file_path = os.path.join(placeholder_images_path, fake.random_element(image_files))
             with open(image_file_path, "rb") as image_file:
                 category = random.choice(categories)

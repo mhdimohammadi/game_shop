@@ -349,11 +349,12 @@ def order(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            order_ = form.save(commit=False)
-            order_.buyer = request.user
-            order_.save()
+            _order = form.save(commit=False)
+            _order.buyer = request.user
+            _order.paid = True
+            _order.save()
             for item in cart:
-                OrderItem.objects.create(order=order_,game=item['game'],quantity=item['quantity'])
+                OrderItem.objects.create(order=_order,game=item['game'],quantity=item['quantity'])
             cart.clear()
             messages.success(request, 'Order has been created successfully!')
             return redirect('game:index')
