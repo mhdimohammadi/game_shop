@@ -1,6 +1,6 @@
 from re import match
 from django import forms
-from .models import Ticket, CustomUser
+from .models import Ticket, CustomUser, Order
 
 
 class TicketForm(forms.ModelForm):
@@ -133,4 +133,24 @@ class UserPasswordChangeForm(forms.Form):
         return cd['password2']
 
 
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['postal_code', 'province', 'city']
 
+        widgets = {
+            'postal_code': forms.TextInput(
+                attrs={'placeholder': 'Your Postal Code...', 'required': 'required'}),
+            'province': forms.TextInput(
+                attrs={'placeholder': 'Your Province...', 'required': 'required'}),
+            'city': forms.TextInput(
+                attrs={'placeholder': 'Your City...', 'required': 'required'}),
+        }
+
+    def clean_postal_code(self):
+        postal_code = self.cleaned_data['postal_code']
+        if len(postal_code) != 10:
+            raise forms.ValidationError("postal code must be 10 digit")
+        if not postal_code.isdigit():
+            raise forms.ValidationError('phone must be a number')
+        return postal_code

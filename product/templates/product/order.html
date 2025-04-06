@@ -1,0 +1,43 @@
+{% extends 'parent/base.html' %}
+{% load static %}
+{% block title %}Order{% endblock %}
+{% block content %}
+<header class="header">
+    <h1>Submit Your Details</h1>
+</header>
+<main class="content">
+    <div class="form-card">
+      <h2>{{ request.user.username }}'s Information</h2>
+      <hr>
+      {% if cart %}
+      <form action="" method="post">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="error-container">
+                {% for field in form %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            {{ field.label }}:{{ error }}
+                            <hr>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+      {% endif %}
+        <div class="form-group">
+            {{ form.postal_code }}
+        </div>
+        <div class="form-group">
+            {{ form.province }}
+        </div>
+        <div class="form-group">
+            {{ form.city }}
+        </div>
+        <button type="submit" class="submit-btn">Order</button>
+      </form>
+      {% else %}
+       <p>Your cart is empty</p>
+       {% endif %}
+    </div>
+</main>
+{% endblock %}

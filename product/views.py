@@ -1,7 +1,7 @@
 from urllib.parse import quote
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.views.decorators.http import require_POST
-from .models import Game, Category, CustomUser
+from .models import Game, Category, CustomUser, OrderItem
 from django.http import JsonResponse, HttpResponseForbidden, HttpResponse
 from django.template.loader import render_to_string
 from .forms import *
@@ -16,7 +16,7 @@ from django.core.mail import EmailMultiAlternatives
 from decouple import config
 from .cart import Cart
 import uuid
-from .redis_utils import cache_game_details, get_cached_game_details,clear_game_cache
+from .redis_utils import cache_game_details, get_cached_game_details
 
 
 def index(request):
@@ -328,7 +328,7 @@ def remove_game(request):
         return JsonResponse({'success': False, "error": 'Item NOt Found'})
 
 
-@login_required
+@login_required(login_url='game:login')
 def picture_change(request):
     if request.method == 'POST':
         user = request.user
@@ -340,3 +340,23 @@ def picture_change(request):
             messages.error(request, 'No image selected.')
         return redirect('game:profile')
 
+
+
+
+@login_required(login_url='game:login')
+def order(request):
+    cart = Cart(request)
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order_ = form.save(commit=False)
+            order_.buyer = request.user
+            order_.save()
+            for item in cart:
+                OrderItem.objects.create(order=order_,game=item['game'],quantity=item['quantity'])
+            cart.clear()
+            messages.success(request, 'Order has been created successfully!')
+            return redirect('game:index')
+    else :
+        form = OrderForm()
+    return render(request,'product/order.html',{'form':form})
