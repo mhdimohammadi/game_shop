@@ -169,7 +169,7 @@ def game_search(request):
     games = []
     if query:
         games1 = Game.objects.annotate(similarity=TrigramSimilarity('title', query)).filter(similarity__gte=0.3)
-        games2 = Game.objects.annotate(similarity=TrigramSimilarity('description', query)).filter(similarity__gte=0.3)
+        games2 = Game.objects.annotate(similarity=TrigramSimilarity('summary', query)).filter(similarity__gte=0.3)
         games = (games1 | games2).order_by('-similarity')
     return render(request, 'product/search.html', {'games': games, 'query': query})
 
