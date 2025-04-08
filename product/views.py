@@ -233,7 +233,7 @@ def reset_password(request):
             token = serializer.dumps({'email': email, 'unique_id': unique_id}, salt='password-reset-salt')
             token = quote(token)
             html_content = render_to_string('email/reset_password_email.html', {
-                'reset_url': f'http://127.0.0.1:8000{reverse('game:reset_password_done')}?token={token}'})
+                'reset_url': f"http://127.0.0.1:8000{reverse('game:reset_password_done')}?token={token}"})
             email_message = EmailMultiAlternatives(
                 'reset password',
                 "If you’re trying to reset your password, use the link provided in the email.",
