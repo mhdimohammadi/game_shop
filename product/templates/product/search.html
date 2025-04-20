@@ -32,6 +32,8 @@
                             </div>
                         </div>
                     </div>
+                {% empty %}
+                    <h2>There is no results for {{ query }}</h2>
                 {% endfor %}
             </div>
             <div class="row">
@@ -40,8 +42,6 @@
                         {% if games.has_previous %}<li><a href="?page={{ games.previous_page_number}}"> &lt; </a></li>{% endif %}
                         {% for page in games.paginator.page_range %}
                         <li><a {% if games.number == page %}class="is_active"{% endif %} href="?page={{ page }}">{{ page }}</a></li>
-                        {% empty %}
-                        <h2>There is no results for {{ query }}</h2>
                         {% endfor %}
                         {% if games.has_next %}<li><a href="?page={{ games.next_page_number }}"> &gt; </a></li>{% endif %}
                     </ul>

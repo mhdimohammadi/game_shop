@@ -15,3 +15,4 @@ ________________________________________________________________________________
 Additional description:
 The original templates which I downloaded from Google didn't have the profile and order templates, so I created them my self
 with the help of the AI that's why they are a little bit janky.
+If you are using GitHub and the project doesn't work please reset to this commit "9c4e950a5dc83c434a93dc7a04a93a2d6f4a2810"
