@@ -10,9 +10,8 @@ if you are cloning the project from GitHub you should make a .env file and defin
 for generating fake categories use python manage.py generate_fake_category in the terminal
 for generating fake games use python manage.py generate_fake_data in the terminal. please use the above command first so the categories are generated for games.
 install redis.
-[use Docker for easier setup]
+[use Docker for easier setup, you can pull the image from my game_shop repo in https://hub.docker.com/repositories/evilmm]
 ________________________________________________________________________________________________________________________________
 Additional description:
 The original templates which I downloaded from Google didn't have the profile and order templates, so I created them my self
 with the help of the AI that's why they are a little bit janky.
-If you are using GitHub and the project doesn't work please reset to this commit "9c4e950a5dc83c434a93dc7a04a93a2d6f4a2810"
