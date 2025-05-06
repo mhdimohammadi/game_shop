@@ -14,7 +14,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0').split(',')
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -76,7 +76,6 @@ DATABASES = {
         'NAME': config('DATABASE_NAME'),
         'USER': config('DATABASE_USER'),
         'PASSWORD': config('DATABASE_PASSWORD'),
-        'HOST': config('DATABASE_HOST', default='host.docker.internal'),
         'PORT': config('PORT'),
     }
 }
@@ -111,7 +110,8 @@ CACHES = {
     }
 }
 
-
+REDIS_HOST = config('REDIS_HOST', 'redis')
+REDIS_PORT = 6379
 
 
 # Internationalization
@@ -145,7 +145,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True  
+EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = config("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
