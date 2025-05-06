@@ -16,7 +16,8 @@ from django.core.mail import EmailMultiAlternatives
 from decouple import config
 from .cart import Cart
 import uuid
-from .redis_utils import cache_game_details, get_cached_game_details
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
 
 def index(request):
@@ -29,23 +30,13 @@ def index(request):
 
 
 def game_detail(request, id):
-    game_data = get_cached_game_details(id)
-    if not game_data:
+    cache_key = f'game_detail_{id}'
+    game = cache.get(cache_key)
+    if not game:
         game = get_object_or_404(Game, id=id)
-        game_data = {
-            'id':game.id,
-            'title': game.title,
-            'price': game.price,
-            'off' : game.off,
-            'final_price': game.get_final_price(),
-            'summary': game.summary,
-            'category_id' : game.category.id,
-            'image' : game.image.url,
-            'tags': [tag.name for tag in game.tags.all()],
-        }
-        cache_game_details(id, game_data)
-    similar_games = Game.objects.filter(category_id=game_data['category_id']).exclude(id=game_data['id'])[:5]
-    return render(request, "product/product-details.html", {"game": game_data, "similar_games": similar_games})
+        cache.set(cache_key, game, timeout=60 * 30)
+    similar_games = Game.objects.filter(category_id=game.category).exclude(id=game.id)[:5]
+    return render(request, "product/product-details.html", {"game": game, "similar_games": similar_games})
 
 
 def contact_us(request):
@@ -60,6 +51,7 @@ def contact_us(request):
     return render(request, "product/contact.html", {"form": form})
 
 
+@cache_page(60 * 30,key_prefix='game_list')
 def game_list(request):
     games = Game.objects.all()
     categories = Category.objects.all()
@@ -67,17 +59,11 @@ def game_list(request):
 
 
 def filter_games(request):
-    # Retrieve category from query parameters; default to "all"
     category = request.GET.get('category', 'all')
-
-    # Filter games based on category
     if category == 'all':
         games = Game.objects.all()
     else:
-        # Adjust the lookup according to your Game model relationships/fields
         games = Game.objects.filter(category__name=category)
-
-    # Render a partial template with the filtered games
     html = render_to_string('partials/game_list_items.html', {'games': games})
     return JsonResponse({'html': html})
 
@@ -341,8 +327,6 @@ def picture_change(request):
         return redirect('game:profile')
 
 
-
-
 @login_required(login_url='game:login')
 def order(request):
     cart = Cart(request)
@@ -354,10 +338,10 @@ def order(request):
             _order.paid = True
             _order.save()
             for item in cart:
-                OrderItem.objects.create(order=_order,game=item['game'],quantity=item['quantity'])
+                OrderItem.objects.create(order=_order, game=item['game'], quantity=item['quantity'])
             cart.clear()
             messages.success(request, 'Order has been created successfully!')
             return redirect('game:index')
-    else :
+    else:
         form = OrderForm()
-    return render(request,'product/order.html',{'form':form})
+    return render(request, 'product/order.html', {'form': form})

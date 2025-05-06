@@ -18,12 +18,12 @@
       <div class="row">
         <div class="col-lg-6">
           <div class="left-image">
-            <img src="{{ game.image }}" alt="game cover">
+            <img src="{{ game.image.url }}" alt="game cover">
           </div>
         </div>
         <div class="col-lg-6 align-self-center">
           <h4>{{ game.title }}</h4>
-          <span class="price">{% if game.off == 0 %}${{ game.price }}{% else %}<em>${{ game.price }}</em> ${{ game.final_price }}{% endif %}</span>
+          <span class="price">{% if game.off == 0 %}${{ game.price }}{% else %}<em>${{ game.price }}</em> ${{ game.get_final_price }}{% endif %}</span>
           <p>{{ game.summary|linebreaks }}</p>
             {% if game.id|stringformat:"s" in cart.cart %}
                 <p>this game is already in your cart</p>
@@ -33,7 +33,7 @@
           <ul>
             <li><span>Game ID:</span> {{ game.id }}</li>
             <li><span>category:</span><a href="#">{{ game.category }}</a></li>
-            <li><span>Multi-tags:</span> {% for tag in game.tags %} <a href="#">#{{ tag }}</a>,{% endfor %}</li>
+            <li><span>Multi-tags:</span> {% for tag in game.tags.all %} <a href="#">#{{ tag }}</a>,{% endfor %}</li>
           </ul>
         </div>
         <div class="col-lg-12">
